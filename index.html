@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07120f">
+<title>GoalPlay — Futbol Tahmin Oyunu</title>
+<style>
+:root{--bg:#07120f;--panel:#101f1a;--panel2:#142820;--line:#244337;--green:#42e08b;--muted:#9ab2a6;--white:#f3fbf6;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#153328 0,#07120f 52%);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#07120fee;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.wrap{max-width:1100px;margin:auto;padding:0 16px}.top{height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:22px;font-weight:900;letter-spacing:-1px}.brand span{color:var(--green)}button{border:0;border-radius:11px;padding:11px 14px;background:var(--green);color:#062015;font-weight:800;cursor:pointer}button.secondary{background:#1b3329;color:var(--white);border:1px solid var(--line)}button:disabled{opacity:.45;cursor:not-allowed}
+.balance{background:#173527;border:1px solid #2e6549;padding:8px 12px;border-radius:30px;color:#aaf5c9;font-weight:800;white-space:nowrap}
+.hero{padding:28px 0 20px}.eyebrow{color:var(--green);font-size:12px;font-weight:900;letter-spacing:2px}.hero h1{font-size:clamp(30px,6vw,52px);line-height:1.04;margin:8px 0 10px;letter-spacing:-1.8px}.hero p{color:var(--muted);max-width:620px;margin:0;line-height:1.6}
+.notice{margin:14px 0;padding:11px 13px;background:#2b2617;border:1px solid #67552b;color:#f3d99b;border-radius:12px;font-size:12px;line-height:1.5}
+.tabs{display:flex;gap:8px;overflow:auto;padding:10px 0 16px}.tabs button{white-space:nowrap}.tabs button.active{background:var(--green);color:#062015}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;padding-bottom:40px}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:8px 0 12px}.sectionhead h2{font-size:19px;margin:0}.muted{color:var(--muted)}
+.league{margin:12px 0;background:#0c1914;border:1px solid var(--line);border-radius:15px;overflow:hidden}.leaguehead{padding:12px 14px;background:#13271e;color:#c9e7d6;font-weight:800;display:flex;justify-content:space-between}
+.match{padding:14px;border-top:1px solid #1b3328}.matchtop{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:12px}.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}.team{font-weight:800}.team:last-child{text-align:right}.vs{font-size:11px;color:var(--muted)}
+.odds{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}.odd{background:#172c22;border:1px solid #2b4a3a;border-radius:9px;color:#d8f3e3;padding:10px 5px;font-weight:800}.odd small{display:block;color:var(--muted);font-size:10px;font-weight:500;margin-bottom:4px}.odd.selected{border-color:var(--green);background:#1b4a31;color:#b7ffd2}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;height:max-content;position:sticky;top:82px}.side h3{margin:0 0 12px}.token{font-size:30px;color:var(--green);font-weight:900}.side p{font-size:12px;line-height:1.5;color:var(--muted)}.empty{padding:16px;border:1px dashed #355344;border-radius:10px;color:var(--muted);font-size:13px}
+.row{display:flex;justify-content:space-between;gap:10px;margin:10px 0;font-size:13px}.stake{width:100%;padding:12px;background:#08140f;border:1px solid var(--line);border-radius:9px;color:white;margin:10px 0}
+footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:12px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:static;order:-1}.hero{padding-top:22px}.top{height:60px}.balance{font-size:12px}.brand{font-size:20px}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><div class="brand">GOAL<span>PLAY</span></div><div class="balance">🪙 <b id="headerTokens">1.000</b> jeton</div></div></header>
+<main class="wrap">
+<section class="hero"><div class="eyebrow">FUTBOL • TAHMİN • EĞLENCE</div><h1>Maç heyecanına<br><span style="color:var(--green)">tahminlerinle</span> katıl.</h1><p>Favori maçlarını seç, futbol bilginle sanal puanlarını artır ve sıralamada yüksel.</p>
+<div class="notice">DEMO SÜRÜMÜ: Buradaki maçlar ve oranlar örnek veridir; canlı skor veya gerçek bahis oranı değildir. Jetonlar sanaldır, parasal değeri yoktur ve nakde çevrilemez.</div>
+</section>
+<nav class="tabs"><button class="active" data-filter="all">Tüm maçlar</button><button class="secondary" data-filter="today">Bugün</button><button class="secondary" data-filter="live">Canlı</button><button class="secondary" data-filter="upcoming">Yaklaşan</button></nav>
+<div class="layout"><section><div class="sectionhead"><h2>⚽ Öne çıkan maçlar</h2><span class="muted" style="font-size:12px">Örnek fikstür</span></div><div id="matches"></div></section>
+<aside class="side"><h3>🎟️ Tahmin kuponun</h3><div class="token"><span id="sideTokens">1.000</span> <small style="font-size:13px">jeton</small></div><p>Başlangıç bakiyen demo amaçlıdır. Bu prototipte veriler yalnızca bu tarayıcıda saklanır.</p><div id="slip" class="empty">Kupona eklemek için bir maçta tahmin seç.</div><div id="stakeArea" hidden><input class="stake" id="stake" type="number" min="1" max="1000" value="50" aria-label="Jeton miktarı"><div class="row"><span>Olası sanal puan</span><b id="potential">100</b></div><button id="submit" style="width:100%">Demo tahminini kaydet</button></div><p id="message" aria-live="polite"></p><button class="secondary" id="reset" style="width:100%">Demo bakiyesini sıfırla</button></aside>
+</div></main>
+<footer><div class="wrap">GoalPlay — Ücretsiz futbol tahmin oyunu prototipi. Gerçek para, ödül, para yatırma veya çekme özelliği bulunmaz.</div></footer>
+<script>
+const games=[
+{league:"🇬🇧 Premier League",time:"Örnek • 20:00",status:"Yaklaşan",home:"Arsenal",away:"Chelsea",odds:["2.05","3.40","3.60"]},
+{league:"🇪🇸 La Liga",time:"Örnek • 21:00",status:"Yaklaşan",home:"Barcelona",away:"Sevilla",odds:["1.55","4.20","5.40"]},
+{league:"🇩🇪 Bundesliga",time:"Örnek • 18:30",status:"Canlı demo",home:"Bayern Münih",away:"Dortmund",odds:["1.80","3.80","3.90"]},
+{league:"🇹🇷 Süper Lig",time:"Örnek • 19:00",status:"Yaklaşan",home:"Galatasaray",away:"Beşiktaş",odds:["1.95","3.30","3.75"]},
+{league:"🇮🇹 Serie A",time:"Örnek • 22:00",status:"Yaklaşan",home:"Inter",away:"Juventus",odds:["2.10","3.10","3.50"]}
+];
+let tokens=Number(localStorage.getItem("gp_tokens")||1000),pick=null,filter="all";
+const fmt=n=>Number(n).toLocaleString("tr-TR");
+function balance(){document.querySelector("#headerTokens").textContent=fmt(tokens);document.querySelector("#sideTokens").textContent=fmt(tokens)}
+function render(){const box=document.querySelector("#matches");box.innerHTML="";let list=games.filter(g=>filter==="all"||(filter==="live"&&g.status==="Canlı demo")||(filter==="upcoming"&&g.status==="Yaklaşan")||(filter==="today"));
+if(!list.length){box.innerHTML='<div class="empty">Bu kategoride demo maç bulunmuyor.</div>';return}
+list.forEach((g,i)=>{let idx=games.indexOf(g);let el=document.createElement("article");el.className="league";el.innerHTML=`<div class="leaguehead"><span>${g.league}</span><span style="font-size:11px;color:#9ab2a6">${g.status}</span></div><div class="match"><div class="matchtop"><span>${g.time}</span><span>1X2 • Demo oran</span></div><div class="teams"><div class="team">${g.home}</div><div class="vs">VS</div><div class="team">${g.away}</div></div><div class="odds">${["1","X","2"].map((label,j)=>`<button class="odd ${pick&&pick.idx===idx&&pick.j===j?"selected":""}" data-i="${idx}" data-j="${j}"><small>${["Ev sahibi","Beraberlik","Deplasman"][j]}</small>${g.odds[j]}</button>`).join("")}</div></div>`;box.appendChild(el)});
+document.querySelectorAll(".odd").forEach(b=>b.onclick=()=>{let idx=+b.dataset.i,j=+b.dataset.j;pick={idx,j};document.querySelector("#slip").className="";document.querySelector("#slip").innerHTML=`<b>${games[idx].home} – ${games[idx].away}</b><div class="row"><span>${["Ev sahibi kazanır","Beraberlik","Deplasman kazanır"][j]}</span><b>${games[idx].odds[j]}</b></div>`;document.querySelector("#stakeArea").hidden=false;document.querySelector("#message").textContent="";document.querySelector("#potential").textContent=fmt(Math.floor((Number(document.querySelector("#stake").value)||0)*Number(games[idx].odds[j])));render()})}
+document.querySelector("#stake").oninput=()=>{if(pick)document.querySelector("#potential").textContent=fmt(Math.floor((Number(document.querySelector("#stake").value)||0)*Number(games[pick.idx].odds[pick.j])))};
+document.querySelector("#submit").onclick=()=>{let n=Number(document.querySelector("#stake").value);if(!pick)return;if(!Number.isInteger(n)||n<1||n>tokens){document.querySelector("#message").textContent="Geçerli bir jeton miktarı gir.";return}tokens-=n;localStorage.setItem("gp_tokens",tokens);balance();document.querySelector("#message").textContent="Demo tahminin kaydedildi. Gerçek maç sonucu veya kazanç işlemi yapılmaz.";document.querySelector("#slip").className="empty";document.querySelector("#slip").textContent="Tahmin kaydedildi.";document.querySelector("#stakeArea").hidden=true;pick=null;render()};
+document.querySelector("#reset").onclick=()=>{tokens=1000;localStorage.setItem("gp_tokens",tokens);balance();document.querySelector("#message").textContent="Demo bakiyesi sıfırlandı."};
+document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>{x.classList.toggle("active",x===b);x.classList.toggle("secondary",x!==b)});render()});
+balance();render();
+</script>
+</body></html>
